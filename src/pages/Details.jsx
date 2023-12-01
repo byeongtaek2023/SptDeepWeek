@@ -13,6 +13,8 @@ const Textarea = styled.textarea`
 function Details() {
   const dispatch = useDispatch();
   const render = useSelector((state) => state.rerenderSlice);
+  const auth = useSelector((state) => state.authSlice);
+  console.log('디테일어스',auth);
   const navigate = useNavigate();
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
