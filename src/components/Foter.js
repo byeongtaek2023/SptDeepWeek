@@ -5,9 +5,9 @@ import { codenseContent } from "shared/data";
 
 function Foter() {
 
-  const render = useSelector((state)=> state.rerender)
+  const render = useSelector((state)=> state.rerenderSlice)
 
-  const catchMem = useSelector((state)=> state.members)
+  const catchMem = useSelector((state)=> state.membersSlice)
 
   const filterMeber = catchMem
     ? render.filter((item) => item.writedTo ===catchMem)
