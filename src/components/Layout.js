@@ -1,25 +1,27 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import styled from 'styled-components'
+import React, { useEffect } from "react";
+
+import styled from "styled-components";
+
+
+import Home from 'pages/Home';
 
 const Top = styled.div`
-display : flex;
-justify-content :space-between;
-`
+  display: flex;
+  justify-content: space-between;
+`;
 
 const Layout = () => {
-const auth = useSelector((state)=> state.success);
 
 
   return (
     <Top>
-    <button>HOME</button>
-    <div>
-    <button>내프로필</button>
-    <button>로그아웃</button>
-    </div>
+      <h1>HOME</h1>
+      <div>
+        <button>내프로필</button>
+        <button>로그아웃</button>
+      </div>
     </Top>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

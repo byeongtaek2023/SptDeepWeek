@@ -12,6 +12,7 @@ const Login = () => {
   const [password, passwordInputHandler, setPw] = useInput();
   const [nickname, nicknameInputHandler, setNick] = useInput();
   const [islogin, setIsLogin] = useState(true);
+  
   // 아이디는 4~10글자로, 비밀번호는 4~15글자로, 닉네임은 1~10글자로 제한하세요.
 
   //회원가입
@@ -19,7 +20,7 @@ const Login = () => {
     try {
       const response = await api.post("/register", { id, password, nickname });
       console.log("회원가입 완료", response);
-      navigate(`/login`);
+      navigate(`/`);
     } catch (error) {
       alert("회원가입 중 오류");
       console.error("회원가입 중 오류", error);
@@ -28,12 +29,12 @@ const Login = () => {
   //로그인
   const loginHandler = async () => {
     try {
-      const response = await api.post("/login", { id, password });
+      const response = await api.post("/login?expiresIn=1m", { id, password });
       dispatch(auth(response.data));
       localStorage.setItem("토큰", response.data.accessToken);
-      localStorage.setItem("로그인",JSON.stringify(response.data))
+      // localStorage.setItem("로그인",JSON.stringify(response.data))
       console.log("로그인완료", response);
-      navigate(`/`);
+      navigate(`/home`);
     } catch (error) {
       alert("로그인 실패");
       console.error("로그인 실패", error);

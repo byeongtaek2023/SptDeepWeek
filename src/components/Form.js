@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import styled from "styled-components";
-
 import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "redux/modules/rerenderSlice";
 import { selectedMem } from "redux/modules/membersSlice";
 import useInput from "hooks/useInput";
+
+
+import { __addPost } from 'redux/modules/rerenderSlice';
+import json from '../axios/json';
 
 const StContainer = styled.div`
   display: flex;
@@ -14,24 +17,14 @@ const StContainer = styled.div`
 `;
 
 function Form() {
+  //로그인 되면, 나오도록 if문 걸어서 
   const dispatch = useDispatch();
-  // const rerender = useSelector((state) => state.rerenderSlice);
-  const catchMem = useSelector((state) => state.membersSlice);
-  // console.log("Form이 렌더링되었습니다.");
-  // const data = useContext(FamilyContext)
-  // const [nickname, nicknameHandler, setNickname] = useInput("");
-  const [content, contentHandler, setContent] = useInput("");
-  const name = useSelector((state) => state.authSlice.nickname);
-// console.log('폼',name);
-  // //닉네임 입력값 가져오기
-  // const nicknameHandler = (e) => {
-  //   setNickname(e.target.value);
-  // };
+ 
 
-  // //내용 입력값 가져오기
-  // const contentHandler = (e) => {
-  //   setContent(e.target.value);
-  // };
+  const [content, contentHandler, setContent] = useInput("");
+  const name = useSelector((state) => state.authSlice.data?.nickname);
+  const userId = useSelector((state) => state.authSlice.data?.userId);
+  const catchMem = useSelector((state) => state.membersSlice);
 
   //멤버 선택 값 가져오기
   const selectMem = (e) => {
@@ -40,12 +33,7 @@ function Form() {
   };
 
   // 코멘트 추가시 새로 작성
-  const addCommentHandler = () => {
-    //content, nickname 유효성 검사
-    // if (nickname.trim() === "") {
-    //   alert("닉네임을 입력해주세요.");
-    //   return;
-    // }
+  const addCommentHandler = async() => {
 
     if (content.trim() === "") {
       alert("내용을 입력해주세요.");
@@ -60,11 +48,21 @@ function Form() {
         "https://images.unsplash.com/photo-1561962534-50ff147395c3?w=125&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODZ8fCVFQyU5RCVCNSVFQiVBQSU4NSVFQyU5RCU5OHxlbnwwfHwwfHx8MA%3D%3D",
       writedTo: catchMem,
       createdAt: new Date().toString(),
-      isDone: false,
+      userId: userId,
+
     };
     dispatch(addPost(newCard));
-    // setNickname("");
     setContent("");
+// 폼 등록 시도 
+      try {
+        const response = await json.post("/letters", newCard)
+        console.log('form전송완료', response);
+      } catch (error) {
+        console.log('폼 전송 중 오류', error);
+      }
+      // 가져오기
+      const responses = await json.get("/letters");
+      console.log("가져오기", responses);
   };
 
   return (
@@ -72,12 +70,7 @@ function Form() {
       <div> 
       <label>닉네임: {name}</label>
       </div>
-      {/* <span
-        value=
-        placeholder="최대 20글자까지 작성"
-        maxLength={20}
-        // onChange={nicknameHandler}
-      /> */}
+
 <div>
       <label>내용</label>
       <input
