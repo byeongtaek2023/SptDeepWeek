@@ -8,6 +8,8 @@ import Layout from "components/Layout";
 import { useDispatch } from 'react-redux';
 import { __addPost } from 'redux/modules/rerenderSlice';
 import json from '../axios/json';
+import api from '../axios/api';
+import { auth } from 'redux/modules/authSlice';
 
 const AuthenticatedRoutes = () => {
 
@@ -23,6 +25,32 @@ const AuthenticatedRoutes = () => {
 
 const Router = () => {
   const isLogin = false;
+  const dispatch = useDispatch();
+  //지속 로그인
+  useEffect(() => {
+    // const token = JSON.parse(localStorage.getItem("로그인"))
+    const accessToken = localStorage.getItem("토큰");
+    // authorization 속성 정의
+    if (accessToken) {
+      api
+        .get(`/user`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((response) => {
+          dispatch(auth(response.data));
+          console.log("로그인지속", response);
+        })
+        .catch((error) => {
+          // alert("다시 로그인 해주세요");
+
+          console.error("유효하지않은 토큰", error);
+        });
+    }
+  }, []); 
+
 
   return (
     <BrowserRouter>

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePost, editPost } from "redux/modules/rerenderSlice";
-import api from '../axios/api';
+import api from "../axios/api";
 
 const Textarea = styled.textarea`
   width: 700px;
@@ -21,38 +21,14 @@ function Details() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
 
-  //지속 로그인
-  useEffect(() => {
-    // const token = JSON.parse(localStorage.getItem("로그인"))
-    const accessToken = localStorage.getItem("토큰");
-    // authorization 속성 정의
-    if (accessToken) {
-      api
-        .get(`/user`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        .then((response) => {
-          dispatch(auth(response.data));
-          console.log("로그인지속", response);
-        })
-        .catch((error) => {
-          alert("다시 로그인 해주세요");
-
-          console.error("유효하지않은 토큰", error);
-        });
-    }
-  }, []);
-
 
 
   // 같은 아이디 찾기
   const FindSameRenderData = render.find(
     (item) => item.id.toString() === id.toString()
   );
-
+  // 인증한 사람이냐?
+  const isCurrentUserAuthor = FindSameRenderData.userId === auth.data?.id;
   // 레터삭제
   const removeButtonHandler = (id) => {
     const askDelete = window.confirm("삭제하시겠습니까?");
